@@ -1,13 +1,10 @@
 {
-  "uuid": "lockscreen@sri.ramkrishna.me",
-  "name": "Lock Screen",
-  "description": "Add a lock icon to the top bar and lock the screen without a keyboard shortcut.",
-  "version": 16,
+  "description": "Add lock icon to the panel and lock the screen instead of using ctrl-alt-l", 
+  "name": "Lock Screen", 
   "shell-version": [
-    "45",
-    "46",
-    "47",
-    "48"
-  ],
-  "url": "https://github.com/sramkrishna/gnome3-extensions"
+    "45", "46", "47", "48"
+  ], 
+  "url": "https://github.com/sramkrishna/gnome3-extensions", 
+  "uuid": "lockscreen@sri.ramkrishna.me", 
+  "version": 15
 }

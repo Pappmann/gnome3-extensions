@@ -27,22 +27,18 @@ import * as PanelMenu from 'resource:///org/gnome/shell/ui/panelMenu.js';
 
 import {Extension} from 'resource:///org/gnome/shell/extensions/extension.js';
 
-const STATUS_AREA_ID = 'lockscreen-button';
-
 export default class LockScreenExtension extends Extension {
-    enable() {
-        if (this._button)
-            return;
+    constructor(metadata) {
+        super(metadata);
+    }
 
+    enable() {
         this._button = new LockScreenButton();
-        Main.panel.addToStatusArea(STATUS_AREA_ID, this._button);
+        Main.panel.addToStatusArea(this.metadata.uuid, this._button);
     }
 
     disable() {
-        if (!this._button)
-            return;
-
-        this._button.destroy();
+        this._button?.destroy();
         this._button = null;
     }
 }
@@ -53,10 +49,7 @@ class LockScreenButton extends PanelMenu.Button {
     }
 
     constructor() {
-        super(0.0, 'Lock Screen', true);
-
-        this.accessible_name = 'Lock Screen';
-        this.add_style_class_name('panel-button');
+        super(0.0, null, true);
 
         this._icon = new St.Icon ({
             icon_name: 'changes-prevent-symbolic',
@@ -65,7 +58,7 @@ class LockScreenButton extends PanelMenu.Button {
 
         this.add_child(this._icon);
 
-        this.connect('clicked', () => this.#lockScreen());
+        this.connect('button-press-event', this.#lockScreen);
     }
 
     #lockScreen() {
