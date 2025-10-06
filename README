@@ -1,23 +1,21 @@
 My extensions for GNOME 3
-License is: GPL2 or later
+License: GPL2 or later
 
-## Automatisierte Veröffentlichung
+## Automated publishing
 
-Dieses Repository enthält einen GitHub Actions Workflow, der die Erweiterung
-verpackt und – sobald ein gültiger API-Schlüssel hinterlegt wurde – automatisch
-auf extensions.gnome.org veröffentlicht. Um die Aktualisierung zu aktivieren,
-füge in den Repository-Einstellungen das Secret `GNOME_EXTENSIONS_API_KEY`
-mit deinem persönlichen API-Schlüssel hinzu. Wenn ein Tag nach dem Schema
-`v*` erstellt oder der Workflow manuell ausgelöst wird, passiert Folgendes:
+This repository ships a GitHub Actions workflow that packages the extension and,
+once a valid API key has been configured, automatically publishes it to
+extensions.gnome.org. To enable automated updates, add the secret
+`GNOME_EXTENSIONS_API_KEY` with your personal API key in the repository
+settings. When a tag matching the `v*` pattern is created or the workflow is
+triggered manually, it performs the following steps:
 
-1. Abhängigkeiten (`gnome-shell`, `gnome-extensions-cli` usw.) werden
-   installiert.
-2. Die Erweiterung aus `lockscreen@sri.ramkrishna.me/` wird mit
-   `gnome-extensions pack` zu einem Zip-Archiv gebaut.
-3. Das Archiv wird mit Hilfe des Skripts
-   `scripts/publish_to_gnome_extensions.py` über `gext publish` zur Plattform
-   hochgeladen.
-4. Das gebaute Paket wird als Workflow-Artefakt zur Verfügung gestellt.
+1. Install the required dependencies (`gnome-shell`, `gnome-extensions-cli`, etc.).
+2. Package the extension from `lockscreen@sri.ramkrishna.me/` using
+   `gnome-extensions pack` to produce a zip archive.
+3. Upload the archive to extensions.gnome.org via `gext publish` through the
+   helper script `scripts/publish_to_gnome_extensions.py`.
+4. Attach the built package as a workflow artifact.
 
-So bleibt die Erweiterung auf extensions.gnome.org automatisch auf dem
-aktuellen Stand, ohne dass lokal ein Zip-Archiv erzeugt werden muss.
+This keeps the extension on extensions.gnome.org up to date automatically
+without needing to generate a zip archive locally.
