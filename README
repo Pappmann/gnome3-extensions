@@ -1,3 +1,21 @@
 My extensions for GNOME 3
+License: GPL2 or later
 
-License is: GPL2 or later
+## Automated publishing
+
+This repository ships a GitHub Actions workflow that packages the extension and,
+once a valid API key has been configured, automatically publishes it to
+extensions.gnome.org. To enable automated updates, add the secret
+`GNOME_EXTENSIONS_API_KEY` with your personal API key in the repository
+settings. When a tag matching the `v*` pattern is created or the workflow is
+triggered manually, it performs the following steps:
+
+1. Install the required dependencies (`gnome-shell`, `gnome-extensions-cli`, etc.).
+2. Package the extension from `lockscreen@sri.ramkrishna.me/` using
+   `gnome-extensions pack` to produce a zip archive.
+3. Upload the archive to extensions.gnome.org via `gext publish` through the
+   helper script `scripts/publish_to_gnome_extensions.py`.
+4. Attach the built package as a workflow artifact.
+
+This keeps the extension on extensions.gnome.org up to date automatically
+without needing to generate a zip archive locally.

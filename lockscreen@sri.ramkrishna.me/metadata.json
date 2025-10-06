@@ -1,10 +1,13 @@
 {
-  "description": "Add lock icon to the panel and lock the screen instead of using ctrl-alt-l", 
-  "name": "Lock Screen", 
+  "uuid": "lockscreen@sri.ramkrishna.me",
+  "name": "Lock Screen",
+  "description": "Add a lock icon to the panel so you can secure the session without reaching for the Super+L shortcut.",
+  "url": "https://github.com/sramkrishna/gnome3-extensions",
   "shell-version": [
-    "45", "46", "47", "48"
-  ], 
-  "url": "https://github.com/sramkrishna/gnome3-extensions", 
-  "uuid": "lockscreen@sri.ramkrishna.me", 
-  "version": 15
+    "45",
+    "46",
+    "47",
+    "48"
+  ],
+  "version": 16
 }
