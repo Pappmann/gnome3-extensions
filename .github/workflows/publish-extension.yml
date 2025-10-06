@@ -1,0 +1,70 @@
+name: Publish to GNOME Extensions
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  publish:
+    name: Package and publish extension
+    runs-on: ubuntu-latest
+    env:
+      EXTENSION_DIR: lockscreen@sri.ramkrishna.me
+      DIST_DIR: dist
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Install GNOME Extensions tooling
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gnome-shell gnome-shell-extension-prefs gnome-session-bin python3-pip jq
+          pip3 install --user gnome-extensions-cli
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+          gnome-extensions version
+          gext --version
+
+      - name: Determine version from metadata
+        id: metadata
+        run: |
+          VERSION=$(jq -r '.version' "${EXTENSION_DIR}/metadata.json")
+          if [ -z "$VERSION" ] || [ "$VERSION" = "null" ]; then
+            echo "::error::Unable to read version from metadata.json"
+            exit 1
+          fi
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Package extension
+        run: |
+          mkdir -p "$DIST_DIR"
+          gnome-extensions pack "$EXTENSION_DIR" --out-dir "$DIST_DIR" --force
+
+      - name: Publish extension to extensions.gnome.org
+        env:
+          GNOME_EXTENSIONS_API_KEY: ${{ secrets.GNOME_EXTENSIONS_API_KEY }}
+        run: |
+          if [ -z "$GNOME_EXTENSIONS_API_KEY" ]; then
+            echo "::warning::GNOME_EXTENSIONS_API_KEY secret not configured. Skipping publish step."
+            exit 0
+          fi
+
+          ARCHIVE=$(ls "$DIST_DIR"/*.shell-extension.zip)
+          if [ -z "$ARCHIVE" ]; then
+            echo "::error::Extension archive not found"
+            exit 1
+          fi
+
+          python3 scripts/publish_to_gnome_extensions.py \
+            --archive "$ARCHIVE" \
+            --api-key "$GNOME_EXTENSIONS_API_KEY" \
+            --uuid $(jq -r '.uuid' "${EXTENSION_DIR}/metadata.json") \
+            --version "${{ steps.metadata.outputs.version }}"
+
+      - name: Upload built artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: shell-extension
+          path: ${{ env.DIST_DIR }}
+          if-no-files-found: warn
